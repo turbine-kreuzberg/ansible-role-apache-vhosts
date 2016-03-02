@@ -4,12 +4,16 @@
 
 - name: config virtual host
   template: src=vhost.conf.j2 dest=/etc/apache2/sites-available/{{ vhost_server_name}}.conf backup=yes
+  register: vhost_changed
 
 - name: enable virtual host
   command: "a2ensite {{ vhost_server_name}}.conf creates=/etc/apache2/sites-enabled/{{ vhost_server_name}}.conf"
+  register: vhost_enabled
 
 - name: check for syntax errors in vhost conf
   command: apache2ctl configtest
+  when: vhost_changed.changed or vhost_enabled.changed
 
 - name: reload apache webserver
   service: name=apache2 state=reloaded
+  when: vhost_changed.changed or vhost_enabled.changed
