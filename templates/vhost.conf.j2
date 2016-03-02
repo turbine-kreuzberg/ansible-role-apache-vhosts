@@ -1,0 +1,15 @@
+<VirtualHost *:80>
+        ServerName {{ vhost_server_name }}
+        ServerAlias {{ vhost_server_alias }}
+        ServerAdmin {{ vhost_server_admin }}
+        DocumentRoot {{ vhost_document_root }}
+
+        ErrorLog {{ vhost_error_log }}
+        CustomLog {{ vhost_custom_log }} combined
+
+        <Directory {{ vhost_document_root }}>
+            Options FollowSymLinks
+            AllowOverride All
+        </Directory>
+
+</VirtualHost>

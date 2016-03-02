@@ -1,0 +1,10 @@
+---
+vhost_server_name: example.com
+vhost_server_alias: www.example.com
+vhost_server_admin: admin@example.com
+vhost_document_root: /var/www/{{ vhost_server_name }}
+vhost_document_root_owner: www-data
+vhost_document_root_group: www-data
+vhost_document_root_mode: 0755
+vhost_error_log: /var/log/apache2/{{ vhost_server_name }}_error.log
+vhost_custom_log: /var/log/apache2/{{ vhost_server_name }}_access.log

@@ -1,0 +1,15 @@
+---
+- name: create webroot folder
+  file: path={{ vhost_document_root }} state=directory owner={{ vhost_document_root_owner }} group={{ vhost_document_root_group }} mode={{ vhost_document_root_mode }}
+
+- name: config virtual host
+  template: src=vhost.conf.j2 dest=/etc/apache2/sites-available/{{ vhost_server_name}}.conf backup=yes
+
+- name: enable virtual host
+  command: "a2ensite {{ vhost_server_name}}.conf creates=/etc/apache2/sites-enabled/{{ vhost_server_name}}.conf"
+
+- name: check for syntax errors in vhost conf
+  command: apache2ctl configtest
+
+- name: reload apache webserver
+  service: name=apache2 state=reloaded
