@@ -1,13 +1,15 @@
-<VirtualHost *:80>
-        ServerName {{ vhost_server_name }}
-        ServerAlias {{ vhost_server_alias }}
-        ServerAdmin {{ vhost_server_admin }}
-        DocumentRoot {{ vhost_document_root }}
+<VirtualHost *:{{ item.port|default() }}>
+        ServerName {{ item.server_name }}
+        {% if item.server_aliases %}ServerAlias {% for server_alias in item.server_aliases %}{{ server_alias }}{% if not loop.last %} {% endif %}{% endfor %}
 
-        ErrorLog {{ vhost_error_log }}
-        CustomLog {{ vhost_custom_log }} combined
+{% endif %}
+        ServerAdmin {{ item.server_admin }}
+        DocumentRoot {{ item.document_root }}
 
-        <Directory {{ vhost_document_root }}>
+        ErrorLog {{ item.server_name }}_error.log
+        CustomLog {{ item.server_name }}_access.log combined
+
+        <Directory {{ item.document_root }}>
             Options FollowSymLinks
             AllowOverride All
         </Directory>

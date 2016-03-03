@@ -1,13 +1,21 @@
 ---
 - name: create webroot folder
-  file: path={{ vhost_document_root }} state=directory owner={{ vhost_document_root_owner }} group={{ vhost_document_root_group }} mode={{ vhost_document_root_mode }}
+  file: >
+    path={{ item.document_root }}
+    state=directory
+    owner={{ item.document_root_owner|default(vhosts_document_root_owner) }}
+    group={{ item.document_root_group|default(vhosts_document_root_group) }}
+    mode={{ item.document_root_mode|default(vhosts_document_root_mode) }}
+  with_items: vhosts
 
 - name: config virtual host
-  template: src=vhost.conf.j2 dest=/etc/apache2/sites-available/{{ vhost_server_name}}.conf backup=yes
+  template: src=vhost.conf.j2 dest=/etc/apache2/sites-available/{{ item.server_name}}.conf backup=yes
+  with_items: vhosts
   register: vhost_changed
 
 - name: enable virtual host
-  command: "a2ensite {{ vhost_server_name}}.conf creates=/etc/apache2/sites-enabled/{{ vhost_server_name}}.conf"
+  command: a2ensite {{ item.server_name }}.conf creates=/etc/apache2/sites-enabled/{{ item.server_name }}.conf
+  with_items: vhosts
   register: vhost_enabled
 
 - name: check for syntax errors in vhost conf
