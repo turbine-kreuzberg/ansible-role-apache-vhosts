@@ -1,4 +1,4 @@
-<VirtualHost *:{{ item.port|default() }}>
+<VirtualHost *:{{ item.port|default(80) }}>
         ServerName {{ item.server_name }}
         {% if item.server_aliases %}ServerAlias {% for server_alias in item.server_aliases %}{{ server_alias }}{% if not loop.last %} {% endif %}{% endfor %}
 
@@ -6,8 +6,8 @@
         ServerAdmin {{ item.server_admin }}
         DocumentRoot {{ item.document_root }}
 
-        ErrorLog {{ item.server_name }}_error.log
-        CustomLog {{ item.server_name }}_access.log combined
+        ErrorLog /var/log/apache2/{{ item.server_name }}_error.log
+        CustomLog /var/log/apache2/{{ item.server_name }}_access.log combined
 
         <Directory {{ item.document_root }}>
             Options FollowSymLinks
